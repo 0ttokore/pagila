@@ -1,13 +1,14 @@
 version: "3"
 volumes:
   pgdata:
+  sqlscripts:
 services:
   pagila:
     image: postgres:17
     container_name: pagila
     environment:
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ${POSTGRES_USER}
+        POSTGRES_USER: ${POSTGRES_PASSWORD}
     volumes:
       - ./pagila-schema.sql:/docker-entrypoint-initdb.d/1-pagila-schema.sql
       - ./pagila-schema-jsonb.sql:/docker-entrypoint-initdb.d/1-pagila-schema-jsonb.sql
@@ -16,6 +17,7 @@ services:
       - ./pagila-data-yum-jsonb.backup:/docker-entrypoint-initdb.d/pagila-data-yum-jsonb.backup
       - ./pagila-data-apt-jsonb.backup:/docker-entrypoint-initdb.d/pagila-data-apt-jsonb.backup
       - pgdata:/var/lib/postgresql/data
+      - sqlscripts:/docker-entrypoint-initdb.d
     expose:
       - 5432
     ports:
@@ -25,11 +27,11 @@ services:
     image: dpage/pgadmin4
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: ${PG_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_PASSWORD}
     volumes:
       - "./pgadmin/pgadmin_servers.json:/pgadmin4/servers.json"
       - "./pgadmin/pgadmin_pass:/pgadmin4/pass"
     ports:
       - "5050:80"
-   
+  
