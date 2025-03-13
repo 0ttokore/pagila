@@ -1,6 +1,7 @@
 version: "3"
 volumes:
   pgdata:
+  sqlscripts:
 services:
   pagila:
     image: postgres:17
@@ -16,6 +17,7 @@ services:
       - ./pagila-data-yum-jsonb.backup:/docker-entrypoint-initdb.d/pagila-data-yum-jsonb.backup
       - ./pagila-data-apt-jsonb.backup:/docker-entrypoint-initdb.d/pagila-data-apt-jsonb.backup
       - pgdata:/var/lib/postgresql/data
+      - sqlscripts:/docker-entrypoint-initdb.d
     expose:
       - 5432
     ports:
@@ -32,3 +34,4 @@ services:
       - "./pgadmin/pgadmin_pass:/pgadmin4/pass"
     ports:
       - "5050:80"
+  
